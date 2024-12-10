@@ -1,5 +1,3 @@
-
-
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/Home";
 import EventPage from "./pages/Events";
@@ -20,7 +18,20 @@ function App() {
           path: "events",
           element: <EventsRootLayout />,
           children: [
-            { index: true, element: <EventPage /> },
+            {
+              index: true,
+              element: <EventPage />,
+              loader: async () => {
+                const response = await fetch("http://localhost:8080/events");
+
+                if (!response.ok) {
+                  //...
+                } else {
+                  const resData = await response.json();
+                  return resData.events;
+                }
+              },
+            },
             { path: ":eventId", element: <EventDetailPage /> },
             { path: "new", element: <NewEvent /> },
             { path: ":eventId/edit", element: <EditEvent /> },
@@ -34,8 +45,6 @@ function App() {
 }
 
 export default App;
-
-
 
 // Challenge / Exercise
 
